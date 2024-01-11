@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import useAxiosPrivate from '../hooks/useAxiosPrivate';
 import useAuthContext from '../hooks/useAuthContext';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 const AuthModel = (props) => {
@@ -60,8 +62,10 @@ const handleAction = async (e)=>{
                 setPassword('');
                 setRollNumber('')
                 const message = response.data.message;
-                alert(message);
-                props.handleAuthModel();
+                toast.success(message, {
+                    position: toast.POSITION.TOP_CENTER,
+                });
+                setSwithcModal(!switchModal);
                 return;
             }
         }else{
@@ -71,6 +75,10 @@ const handleAction = async (e)=>{
                     password
                 }
                 const response = await axiosPrivate.post('auth/login',userToLog);
+                const message = response.data.message;
+                toast.success(message, {
+                    position: toast.POSITION.TOP_CENTER,
+                });
                 setAuth({
                     uuid: response.data.user.uuid,
                     accessToken: response.data.accessToken
@@ -86,9 +94,13 @@ const handleAction = async (e)=>{
     }catch(err){
             const message = err?.response?.data?.message;
             if(message) {
-                alert(message);
+                toast.error(message, {
+                    position: toast.POSITION.TOP_CENTER,
+                });
             }else {
-                alert('User not found!');
+                toast.error('User not found!', {
+                    position: toast.POSITION.TOP_CENTER,
+                });
             }
             setPassword('');
             console.log(err);

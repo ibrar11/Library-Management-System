@@ -8,6 +8,7 @@ import useAxiosPrivate from './hooks/useAxiosPrivate';
 import Unauthorized from './components/Unauthorized';
 import useAuthContext from './hooks/useAuthContext';
 import moment from 'moment';
+import { ToastContainer } from 'react-toastify';
 
 function App() {
 
@@ -46,7 +47,7 @@ function App() {
 
   const handleSubmit = async (book) => {
     try{
-      const {bookName,edition,authorName,publishDate,issueDate,returnDate,isBorrowed,id} = book;
+      const {bookName,edition,authorName,publishDate,issueDate,returnDate,id} = book;
       if (!id) {
         const bookToAdd = {
           bookName,
@@ -64,7 +65,6 @@ function App() {
           edition,
           authorName,
           publishDate,
-          isBorrowed,
           issueDate,
           returnDate
         }
@@ -135,6 +135,7 @@ function App() {
         setStudents = {setStudents}
         setIsModalOpen = {setIsModalOpen}
      />
+     <ToastContainer/>
      <main>
       <Routes>
           <Route path='/' element = {

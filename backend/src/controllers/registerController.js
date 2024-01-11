@@ -10,20 +10,25 @@ const handleRegister = async (req,res) => {
             if(!user) {
                 const hashPassword = await bcrypt.hash(password,10);
                 const user = await students.create({studentName:name,email,password:hashPassword,role:4757,rollNumber});
-                const book = await books.findOne({where:{
-                    [Op.and]: [
-                        {
-                            rollNumber: {
-                                [Op.eq]: user.rollNumber
+                const book = await books.findOne(
+                    {
+                        where:
+                            {
+                                [Op.and]:[
+                                    {
+                                        rollNumber: {
+                                            [Op.eq]: user.rollNumber
+                                        }
+                                    },
+                                    {
+                                        studentId: {
+                                            [Op.is]: null
+                                        }
+                                    },
+                                ]
                             }
-                        },
-                        {
-                            studentId: {
-                                [Op.is]: null
-                            }
-                        },
-                    ]
-                }});
+                    }
+                );
                 if(book) {
                     book.isRequested = true;
                     book.studentId = user.id;
