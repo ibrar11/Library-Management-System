@@ -9,7 +9,11 @@ const refreshToken = async (req,res) => {
             return res.sendStatus(401);
         }
         const refreshToken = cookie.jwt;
-        const user = await students.findOne({where:{refreshToken}});
+        const user = await students.findOne(
+            {
+                where:{refreshToken}
+            }
+        );
         if(!user) return res.sendStatus(403);
         jwt.verify (
             refreshToken,
