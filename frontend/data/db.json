@@ -1,0 +1,100 @@
+{
+  "Books": [
+    {
+      "id": 1,
+      "bookName": "EMT",
+      "edition": "5",
+      "authorName": "Ali Nadir",
+      "publishDate": "2023-11-21",
+      "isBorrowed": true,
+      "studentId": 1,
+      "studentRollNumber": "bcsf19a529"
+    },
+    {
+      "id": 4,
+      "bookName": "Calculus",
+      "edition": "3",
+      "authorName": "Albert",
+      "publishDate": "2023-11-22",
+      "isBorrowed": true,
+      "studentId": 2,
+      "studentRollNumber": "bcsf19a533"
+    },
+    {
+      "id": 5,
+      "bookName": "Physics",
+      "edition": "3",
+      "authorName": "Mathew John",
+      "publishDate": "2023-11-30",
+      "isBorrowed": false,
+      "studentId": 0,
+      "studentRollNumber": ""
+    },
+    {
+      "id": 6,
+      "bookName": "Math",
+      "edition": "4",
+      "authorName": "Ahmed Raza",
+      "publishDate": "2005-05-23",
+      "isBorrowed": false,
+      "studentId": 0,
+      "studentRollNumber": ""
+    },
+    {
+      "id": 7,
+      "bookName": "EMT",
+      "edition": "3",
+      "authorName": "Ibrar",
+      "publishDate": "2023-12-06",
+      "isBorrowed": false,
+      "studentId": 0,
+      "studentRollNumber": ""
+    },
+    {
+      "id": 8,
+      "bookName": "Chemistry",
+      "edition": "10",
+      "authorName": "Usama Shahid",
+      "publishDate": "2023-12-14",
+      "isBorrowed": false,
+      "studentId": 0,
+      "studentRollNumber": ""
+    }
+  ],
+  "Students": [
+    {
+      "id": 1,
+      "studentName": "Ibrar Munawar",
+      "rollNumber": "Bcsf19a529",
+      "issueDate": "November 22nd, 2023",
+      "returnDate": "2023-11-28",
+      "book": {
+        "id": 1,
+        "bookName": "EMT",
+        "edition": "5",
+        "authorName": "Ali Nadir",
+        "publishDate": "2023-11-21",
+        "isBorrowed": true,
+        "studentId": 1,
+        "studentRollNumber": "bcsf19a529"
+      }
+    },
+    {
+      "id": 2,
+      "studentName": "Ahmed Raza",
+      "rollNumber": "Bcsf19a533",
+      "issueDate": "November 22nd, 2023",
+      "returnDate": "2023-12-06",
+      "book": {
+        "id": 4,
+        "bookName": "Calculus",
+        "edition": "3",
+        "authorName": "Albert",
+        "publishDate": "2023-11-22",
+        "isBorrowed": true,
+        "studentId": 2,
+        "studentRollNumber": "bcsf19a533"
+      }
+    }
+  ]
+}
