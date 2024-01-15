@@ -97,30 +97,13 @@ export const ViewBookProvider = ({children}) => {
 
     return (
         <ViewBookContext.Provider value={{
-            id,
-            setId,
-            rollNumber,
-            editModal,
-            assignModal,
-            assignedModal,
-            confirmModal,
-            commonModalCloser,
-            closeConfirmModal,
-            setAssignModal,
-            borrowedModal,
-            openBorrowedModal,
-            setEditModal,
-            setAssignedModal,
-            setRollNumber,
-            requestModal,
-            handleRequestModal,
-            viewRequests,
-            handleViewRequests,
-            openModal,
-            openEditModal,
-            openAssignModal,
-            openAssignedModal,
-            openConfirmModal
+            id, setId, rollNumber, editModal,
+            assignModal, assignedModal, confirmModal,
+            commonModalCloser, closeConfirmModal, setAssignModal,
+            borrowedModal, openBorrowedModal, setEditModal, setAssignedModal,
+            setRollNumber, requestModal, handleRequestModal,
+            viewRequests, handleViewRequests, openModal, openEditModal,
+            openAssignModal, openAssignedModal, openConfirmModal
         }}
         >
             {children}

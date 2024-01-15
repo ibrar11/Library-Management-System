@@ -94,7 +94,10 @@ const Header = () => {
               <RxHamburgerMenu className='menuIcon'/>
             </button>
           </div>
-          {(dropDown || updateModal) && <div className="bluryForMenu" onClick={()=>(handleDropDown())}></div>}
+          {(dropDown || updateModal) && 
+            <div className="bluryForMenu" onClick={()=>(handleDropDown())}>
+            </div>
+          }
           <div className={dropDown ? "dropDownOpen" : "dropDownClose"}>
             <button onClick={()=>(handleUpdateModel())}>
               Change user info

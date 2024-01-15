@@ -17,9 +17,10 @@ const ViewBooks = () => {
   const {students, books, isModalOpen , handleReturn} = useDataContext();
 
   const {id, rollNumber ,editModal,assignModal,assignedModal,confirmModal,
-        commonModalCloser, closeConfirmModal,borrowedModal, openBorrowedModal,
-        requestModal, handleRequestModal, viewRequests, handleViewRequests,
-        openModal, openEditModal, openAssignModal, openAssignedModal, openConfirmModal} = useViewBookContext();
+    commonModalCloser, closeConfirmModal,borrowedModal, openBorrowedModal,
+    requestModal, handleRequestModal, viewRequests, handleViewRequests,
+    openModal, openEditModal, openAssignModal, openAssignedModal, 
+    openConfirmModal} = useViewBookContext();
 
   return (
     <div className='booksPanel'>
@@ -53,19 +54,27 @@ const ViewBooks = () => {
       }
     </div>
     <div className={assignModal ? 'popupActive' : 'popup'}>
-      {assignModal && <AssignModal
-        role = {students?.find((user)=>(user.uuid === localStorage.getItem('user')))?.role}
-        student = {students?.find((user)=>(user.uuid === localStorage.getItem('user')))}
-      />}
+      {assignModal && 
+        <AssignModal
+          role = {students?.find((user)=>(user.uuid === localStorage.getItem('user')))?.role}
+          student = {students?.find((user)=>(user.uuid === localStorage.getItem('user')))}
+        />
+      }
     </div>
     <div className={assignedModal ? 'popupActive' : 'popup'}>
-      {rollNumber && <StudentDetails
-        books = {books.filter((book)=>(book.student !== null && (book.student.rollNumber === rollNumber)))}
-      />}
+      {rollNumber && 
+        <StudentDetails
+          books = {books.filter((book)=>{
+                    return book.student !== null && (book.student.rollNumber === rollNumber)
+                  })}
+        />
+      }
     </div>
     {requestModal && 
       <RequestModal
-        student = {students?.filter((student)=>(student.uuid === localStorage.getItem('uuid')))}
+        student = {students?.filter((student)=>{
+                    return student.uuid === localStorage.getItem('uuid')
+                  })}
       />
     }
     {viewRequests &&
@@ -75,15 +84,24 @@ const ViewBooks = () => {
         <div className="panelHeading">
           <h2>List of Books</h2>
           <div className={auth?.user?.role === role.user ? 'panel-Heading-Buttons2' : 'panel-Heading-Buttons'}>
-            {(!isModalOpen && !editModal && !assignModal && !assignedModal) && 
-              <Button 
-                type='primary' 
-                onClick = {(e)=>(auth?.user?.role === role.user ? openBorrowedModal() : openModal(e))}
-              >
-                {auth?.user?.role === role.user ? 'Borrowed Books' : 'Add Book'}
-              </Button>
+            {
+              (
+                !isModalOpen && !editModal && 
+                !assignModal && !assignedModal
+              ) && 
+                <Button 
+                  type='primary' 
+                  onClick = {(e)=>(auth?.user?.role === role.user ? openBorrowedModal() : openModal(e))}
+                >
+                  {auth?.user?.role === role.user ? 'Borrowed Books' : 'Add Book'}
+                </Button>
             }
-            {(auth?.user?.role === role.admin && !isModalOpen && !editModal && !assignModal && !assignedModal) && 
+            {
+              (
+                auth?.user?.role === role.admin && 
+                !isModalOpen && !editModal && 
+                !assignModal && !assignedModal
+              ) && 
               <Button 
                 classNames={'view-Request-Button'}
                 onClick={handleViewRequests}

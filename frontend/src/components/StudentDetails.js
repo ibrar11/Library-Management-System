@@ -51,7 +51,11 @@ const StudentDetails = (props) => {
             <div className='detailSection'>
                 {student ? 
                     <div className="studentDetails">
-                        <div><p id='firstField'>Name:</p>{student.studentName}</div>
+                        <div>
+                            <p id='firstField'>
+                                Name:{student.studentName}
+                            </p>
+                        </div>
                         <div><p>Roll No: </p>{student.rollNumber}</div>
                     </div> : 
                     <div className="studentDetails">

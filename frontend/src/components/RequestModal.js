@@ -38,15 +38,15 @@ const RequestModal = (props) => {
             key: 'key',
             align: 'center',
             dataIndex: 'studentName'
-          },
-          {
+        },
+        {
             title:'Roll Number',
             key: 'key',
             align: 'center',
             render: payload => {
                 return payload.rollNumber.toUpperCase();
             }
-          }
+        }
     ];
 
     const bookColumns = [
@@ -55,30 +55,30 @@ const RequestModal = (props) => {
             key: 'key',
             align: 'center',
             dataIndex: 'bookName'
-          },
-          {
+        },
+        {
             title:'Author Name',
             key: 'key',
             align: 'center',
             dataIndex: 'authorName'
-          },
-          {
+        },
+        {
             title:'Edition',
             key: 'key',
             align: 'center',
             dataIndex: 'edition'
-          },
-          {
+        },
+        {
             title:'Proposed Return',
             key: 'key',
             align: 'center',
             render: payload=> {
                 return moment(payload.returnDate).format('MMMM Do, YYYY')
             }
-          }
+        }
     ];
 
-  return (
+return (
     <div className='requestModal'>
         <Modal
             title={'Borrow Request'}

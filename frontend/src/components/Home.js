@@ -42,14 +42,19 @@ const Home = () => {
         </div>
         <div className='text-on-image'>
             <h3> Welcome to Library Management System </h3>
-            {auth && <p> Do you want to add details? </p>}
+            {auth && 
+              <p> 
+                Do you want to add details? 
+              </p>
+            }
             <div className='homeButtons'>
                 <Button 
                   type='primary' 
                   id='addButton'
                   onClick = {(e)=>(auth ? openModal(e) : handleAuthModel('Login'))}
                   >
-                    {auth?.user?.role === role.user ? 'Book Gallery' : auth?.user?.role === role.admin ? 'Add Book' : 'Login'}
+                    {auth?.user?.role === role.user ? 'Book Gallery' 
+                    : auth?.user?.role === role.admin ? 'Add Book' : 'Login'}
                 </Button>
                 <Button
                   id={auth?.user?.role === role.user ? 'removeAssign' : 'assignButton'} 
