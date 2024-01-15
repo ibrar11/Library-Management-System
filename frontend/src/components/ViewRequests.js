@@ -1,27 +1,30 @@
 import { Modal,Table } from 'antd'
 import React from 'react'
 import moment from 'moment';
+import useDataContext from '../hooks/useDataContext';
+import useViewBookContext from '../hooks/useViewBookContext';
 
 
-const ViewRequests = (props) => {
+const ViewRequests = () => {
 
-    const data = props.books?.filter((book)=>{
+    const {students,books,handleAssign,handleReturn} = useDataContext();
+    const {handleViewRequests} = useViewBookContext();
+
+    const data = books?.filter((book)=>{
         return (book.isRequested && !book.isBorrowed);
     }).map((book)=>({key:book.id, ...book}));
-
-    const students = props.students;
 
     const handleAccept = (bookId) => {
         const book = data.find((item)=>(item.id === bookId));
         book.student.bookId = bookId;
         book.student.returnDate = book.returnDate
-        props.handleAssign(book.student);
-        props.handleViewRequests();
+        handleAssign(book.student);
+        handleViewRequests();
     }
 
     const declineRequest = (bookId) => {
-        props.handleReturn(bookId);
-        props.handleViewRequests();
+        handleReturn(bookId);
+        handleViewRequests();
     }
 
     const column = [
@@ -99,7 +102,7 @@ const ViewRequests = (props) => {
             footer = {null}
             width= {1100}
             height = {650}
-            onCancel={props.handleViewRequests}
+            onCancel={handleViewRequests}
             destroyOnClose= {true}
         >
           <Table

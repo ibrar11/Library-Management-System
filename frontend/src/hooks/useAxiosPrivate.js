@@ -20,7 +20,8 @@ const useAxiosPrivate = () => {
                     config.headers['Authorization'] = `Bearer ${auth?.accessToken}`;
                 }
                 return config;
-            }, (error) => Promise.reject(error)
+            }, (error) => {
+                return Promise.reject(error)}
         );
 
         const responseInterceptor = axiosPrivate.interceptors.response.use(
@@ -43,6 +44,7 @@ const useAxiosPrivate = () => {
             }
         // eslint-disable-next-line
         );
+
         return () => {
             axiosPrivate.interceptors.request.eject(requestInterceptor);
             axiosPrivate.interceptors.response.eject(responseInterceptor);

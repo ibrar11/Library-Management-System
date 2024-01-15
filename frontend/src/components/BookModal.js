@@ -1,4 +1,7 @@
 import React, { useState } from 'react'
+import useDataContext from '../hooks/useDataContext';
+import useAxiosPrivate from '../hooks/useAxiosPrivate';
+import useViewBookContext from '../hooks/useViewBookContext';
 
 const BookModal = (props) => {
 
@@ -8,8 +11,11 @@ const BookModal = (props) => {
     const [publishDate , setPublishDate] = useState(props.book ? props.book.publishDate : '');
     const [issueDate , setIssueDate] = useState(props.book ? props.book.assigningDate : null);
     const [returnDate , setReturnDate] = useState(props.book ? props.book.returnDate : null);
-    const [isBorrowed , setIsBorrowed] = useState(props.book ? props.book.isBorrowed : false);
     const [allowClick , setAllowClick] = useState(false);
+
+    const {bookId, setIsModalOpen,setBookId,setBooks,books} = useDataContext();
+    const {setId,setAssignModal,setEditModal} = useViewBookContext();
+    const axiosPrivate = useAxiosPrivate();
 
     const goBack = (e) => {
         e.preventDefault();
@@ -19,44 +25,64 @@ const BookModal = (props) => {
         setPublishDate('');
         setIssueDate(null);
         setReturnDate(null);
-        setIsBorrowed(false); 
         setAllowClick (false);
         if(props.book?.id){
-            props.setBookId(null)
-            props.setEditModal(false);
+            setBookId(null)
+            setEditModal(false);
         }else {
-            props.setIsModalOpen(false);
+            setIsModalOpen(false);
         }
     }
 
-    const addBook = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        const condtition = bookName && edition && authorName && publishDate && !allowClick
-        if (condtition){
-            const book = {
-                bookName,
-                edition,
-                authorName,
-                publishDate,
-                issueDate,
-                returnDate,
-                id: props.book?.id
-            };
-            const result =  props.handleSubmit(book);
-            setAllowClick(result);
+        try{
+            if (!props.book?.id) {
+                const condition = bookName && edition && authorName && publishDate;
+                if(condition) {
+                    const bookToAdd = {
+                        bookName,
+                        edition,
+                        authorName,
+                        publishDate,
+                    };
+                    const response = await axiosPrivate.post('books',bookToAdd);
+                    setBookId(response.data.book.id);
+                    setBooks([...books,response.data.book]);
+                    return setAllowClick(true); 
+                } 
+            }else {
+                const condition = bookName && edition && authorName && publishDate && issueDate && returnDate;
+                if(condition) {
+                    const bookToUpdate = {
+                        bookName,
+                        edition,
+                        authorName,
+                        publishDate,
+                        issueDate,
+                        returnDate
+                    }
+                    await axiosPrivate.put(`books/${props.book?.id}`,bookToUpdate);
+                    const response = await axiosPrivate.get(`books`);
+                    setBooks(response.data);
+                    return setAllowClick(true);
+                }
+            }
+        }catch(err){
+            console.log(err.message);
         }
-    }
+    };
 
     const openAssignModal = (e) => {
         e.preventDefault();
-        props.setId(props.bookId)
-        props.setAssignModal(true);
+        setId(bookId)
+        setAssignModal(true);
     }
 
     return (
         <div className='BookModal'>
             <div className='addBookModal'>
-            <form id='bookForm' onSubmit={(e)=>(addBook(e))}>
+            <form id='bookForm' onSubmit={(e)=>(handleSubmit(e))}>
                 <div 
                 className="close-btn">
                 <button
@@ -111,7 +137,7 @@ const BookModal = (props) => {
                         onChange = {(e)=>(setPublishDate(e.target.value))}
                     />
                 </div>
-                {isBorrowed &&
+                {props.book?.isBorrowed &&
                 <div className="mainField">
                     <label htmlFor = 'Issue-Date' className='fields'>Issue Date:</label>
                         <input
@@ -124,7 +150,7 @@ const BookModal = (props) => {
                         />
                 </div>
                 }
-                {isBorrowed && 
+                {props.book?.isBorrowed && 
                 <div className="mainField">
                     <label htmlFor = 'Return-Date' className='fields'>Return Date:</label>
                         <input

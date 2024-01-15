@@ -3,19 +3,22 @@ import useAxiosPrivate from '../hooks/useAxiosPrivate';
 import useAuthContext from '../hooks/useAuthContext';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import useDataContext from '../hooks/useDataContext';
 
 
 const AuthModel = (props) => {
 
+const {students , setStudents} = useDataContext();
+
 const [switchModal,setSwithcModal] = useState(props.authModel === 'Login' ? false : true);
-const [email, setEmail] = useState(props.students.length ? props.students.find((user)=>(user.uuid === props.uuid))?.email : '');
+const [email, setEmail] = useState(students.length ? students.find((user)=>(user.uuid === props.uuid))?.email : '');
 const [password, setPassword] = useState('');
-const [name, setName] = useState(props.students.length ? props.students.find((user)=>(user.uuid === props.uuid))?.studentName : '');
-const [rollNumber, setRollNumber] = useState(props.students.length ? 
-                                    props.students.find((user)=>(user.uuid === props.uuid))?.rollNumber : '')
+const [name, setName] = useState(students.length ? students.find((user)=>(user.uuid === props.uuid))?.studentName : '');
+const [rollNumber, setRollNumber] = useState(students.length ? 
+                                    students.find((user)=>(user.uuid === props.uuid))?.rollNumber : '')
 
 const axiosPrivate = useAxiosPrivate();
-const {auth,setAuth} = useAuthContext();
+const {auth,setAuth,role} = useAuthContext();
 
 const handleSwitch = ()=>{
     setEmail('');
@@ -40,7 +43,7 @@ const handleAction = async (e)=>{
                     accessToken: response.data.accessToken
                 })
                 response = await axiosPrivate.get('students');
-                props.setStudents(response.data);
+                setStudents(response.data);
                 setName('');
                 setEmail('');
                 setPassword('');
@@ -80,12 +83,16 @@ const handleAction = async (e)=>{
                     position: toast.POSITION.TOP_CENTER,
                 });
                 setAuth({
-                    uuid: response.data.user.uuid,
+                    user: response.data.user,
                     accessToken: response.data.accessToken
                 });
                 localStorage.setItem("user", response.data.user.uuid);
+                localStorage.setItem("auth", JSON.stringify({
+                    user: response.data.user,
+                    accessToken: response.data.accessToken
+                }));
                 const result = await axiosPrivate.get(`students`);
-                props.setStudents(result.data);
+                setStudents(result.data);
                 setEmail('');
                 setPassword('');
                 props.handleAuthModel();
@@ -130,7 +137,7 @@ const closeUpdateModal = (e) => {
             onChange={(e)=>(setName(e.target.value))}
             />
         }
-        {(switchModal && (!auth || auth?.user?.role === 4757)) &&
+        {(switchModal && (!auth || auth?.user?.role === role.user)) &&
             <input 
             id='rollNo'
             className='inputField'
@@ -146,7 +153,7 @@ const closeUpdateModal = (e) => {
             className='inputField'
             type='email'
             placeholder={props.updateModal ? 'Enter new email' : 'Enter your email'}
-            required
+            required = {props.updateModal ? false : true}
             autoComplete='true'
             value={email}
             onChange={(e)=>(setEmail(e.target.value))}

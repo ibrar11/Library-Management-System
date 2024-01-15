@@ -1,14 +1,19 @@
 import React from 'react'
 import moment from 'moment';
+import useDataContext from '../hooks/useDataContext';
+import useViewBookContext from '../hooks/useViewBookContext';
 
 const StudentDetails = (props) => {
 
-    const student = props.students.find((student)=>(student.uuid === props.studentId));
+    const {students} = useDataContext();
+    const {id,setAssignedModal,setRollNumber} = useViewBookContext();
+
+    const student = students.find((student)=>(student.uuid === id));
 
     const goBack = (e)=> {
         e.preventDefault();
-        props.setRollNumber('');
-        props.setAssignedModal(false);
+        setRollNumber('');
+        setAssignedModal(false);
     }
 
     const getIssueDate = (bookId) => {

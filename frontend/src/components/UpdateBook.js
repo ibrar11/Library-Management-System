@@ -1,17 +1,19 @@
 import React from 'react'
 import BookModal from './BookModal';
+import useDataContext from '../hooks/useDataContext';
+import useViewBookContext from '../hooks/useViewBookContext';
 
-const UpdateBook = (props) => {
+const UpdateBook = () => {
 
-   const bookToUpdate = props.books.find((book)=>(book.id === props.bookId ));
+  const {books} = useDataContext();
+  const {id} = useViewBookContext();
+
+   const bookToUpdate = books.find((book)=>(book.id === id ));
 
   return (
     <div className='updatePanel'>
             {bookToUpdate && <BookModal
               book = {bookToUpdate}
-              handleSubmit = {props.handleSubmit}
-              setEditModal = {props.setEditModal}
-              setBookId = {props.setBookId}
             /> }
     </div>
   )

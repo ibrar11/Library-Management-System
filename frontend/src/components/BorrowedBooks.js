@@ -1,11 +1,16 @@
 import { Modal,Table } from 'antd'
 import React from 'react'
 import moment from 'moment';
+import useDataContext from '../hooks/useDataContext';
+import useViewBookContext from '../hooks/useViewBookContext';
 
 
-const BorrowedBooks = (props) => {
+const BorrowedBooks = () => {
 
-  const data = props.students?.find((student)=>{
+  const {students} = useDataContext();
+  const {openBorrowedModal} = useViewBookContext();
+
+  const data = students?.find((student)=>{
               return student.uuid === localStorage.getItem('user')
               })?.books.filter((item)=>{
                 return item.isBorrowed === true
@@ -49,7 +54,7 @@ const BorrowedBooks = (props) => {
             footer = {null}
             width= {900}
             height = {550}
-            onCancel={props.openBorrowedModal}
+            onCancel={openBorrowedModal}
             destroyOnClose= {true}
         >
           <Table

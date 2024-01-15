@@ -71,7 +71,6 @@ const handleReturn = async (req,res) => {
 };
 
 const getStudents = async (req,res) => {
-    console.log("logged");
     try{
         const allStudents = await students.findAll({include: books});
         if(allStudents) {

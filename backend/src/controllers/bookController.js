@@ -44,7 +44,7 @@ const updateBook = async (req,res) => {
             book.edition = edition;
             book.authorName = authorName;
             book.publishDate = publishDate;
-            book.issueDate = issueDate;
+            book.asigningDate = issueDate;
             book.returnDate = returnDate;
             book.save();
                 return res.status(201).json({'message': "update complete",book});
