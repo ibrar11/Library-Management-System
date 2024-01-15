@@ -9,7 +9,11 @@ const handleLogin = async (req,res) => {
         if(!email && !password) {
             return res.sendStatus(404);
         }
-        const user = await students.findOne({where:{email}});
+        const user = await students.findOne(
+            {
+                where:{email}
+            }
+        );
         if(!user) {
             return res.status(404).json({"message":"User not found!"});
         }
@@ -33,6 +37,7 @@ const handleLogin = async (req,res) => {
             });
             res.json(
                 {
+                    message:"Logged In!",
                     accessToken,
                     user: {
                         uuid: user.uuid,
@@ -56,14 +61,22 @@ const handleLogout = async (req,res) => {
     if(!cookie?.jwt) {
         const {uuid} = req.body;
         if(uuid) {
-            const user = await students.findOne({where : {uuid}});
+            const user = await students.findOne(
+                {
+                    where : {uuid}
+                }
+            );
             user.refreshToken = '';
             await user.save();
         } 
         return res.sendStatus(204);
     }
     const refreshToken = cookie.jwt;
-    const user = await students.findOne({where : {refreshToken}});
+    const user = await students.findOne(
+        {
+            where : {refreshToken}
+        }
+    );
 
     if(!user) {
         res.clearCookie('jwt', {httpOnly: true, sameSite: 'None', secure: true });

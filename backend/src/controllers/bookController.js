@@ -16,7 +16,11 @@ const addBook = async (req,res) => {
 
 const getBooks = async (req,res) => {
     try{
-        const allBooks = await books.findAll({include: students});
+        const allBooks = await books.findAll(
+            {
+                include: students
+            }
+        );
         if(allBooks) {
             return res.status(201).json(allBooks);
         }
@@ -29,23 +33,23 @@ const getBooks = async (req,res) => {
 const updateBook = async (req,res) => {
     try{
         const { id } = req.params;
-        const {bookName,edition,authorName,publishDate,issueDate,returnDate,isBorrowed} = req.body;
-        console.log(".............. outside checkbox",isBorrowed);
-        const book = await books.findOne( {where: {id} } );
-        if(book) {
-            if(bookName) book.bookName = bookName;
-            if(edition) book.edition = edition;
-            if(authorName) book.authorName = authorName;
-            if(publishDate) book.publishDate = publishDate;
-            if(issueDate) book.issueDate = issueDate;
-            if(issueDate) book.returnDate = returnDate;
-            if(isBorrowed !== undefined){
-                book.isBorrowed = isBorrowed;
+        const {bookName,edition,authorName,publishDate,issueDate,returnDate} = req.body;
+        const book = await books.findOne( 
+            {
+                where: {id} 
             } 
+        );
+        if(book) {
+            book.bookName = bookName;
+            book.edition = edition;
+            book.authorName = authorName;
+            book.publishDate = publishDate;
+            book.asigningDate = issueDate;
+            book.returnDate = returnDate;
             book.save();
                 return res.status(201).json({'message': "update complete",book});
         }
-        return res.status(404).json({"message":'Book not found!'});
+        return res.status(404);
     }catch(err) {
         return res.status(500).json({'message':err.message});
     }
@@ -54,7 +58,11 @@ const updateBook = async (req,res) => {
 const deleteBook = async (req,res) => {
     try{
         const { id } = req.params;
-        const book = await books.findOne({where: {id}});
+        const book = await books.findOne(
+            {
+                where: {id}
+            }
+        );
         if( book ) {
             await book.destroy();
             return res.status(201).json({"message": "Book Deleted"});

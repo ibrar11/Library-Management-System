@@ -9,9 +9,17 @@ const handleAssign = async (req,res) => {
         if( !bookId ) {
             return res.status(404).json({"message":"Book id not found"});
         }
-        const book = await books.findOne({where:{id:bookId}});
+        const book = await books.findOne(
+            {
+                where:{id:bookId}
+            }
+        );
         if(book && req.body) {
-            const studentToAssign = await students.findOne({where:{rollNumber}});
+            const studentToAssign = await students.findOne(
+                {
+                    where:{rollNumber}
+                }
+            );
             if (studentToAssign) {
                 book.studentId = studentToAssign.id;
                 if(assigningDate){
@@ -63,7 +71,6 @@ const handleReturn = async (req,res) => {
 };
 
 const getStudents = async (req,res) => {
-    console.log("logged");
     try{
         const allStudents = await students.findAll({include: books});
         if(allStudents) {

@@ -1,28 +1,41 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import useAuthContext from '../hooks/useAuthContext';
 import useAxiosPrivate from '../hooks/useAxiosPrivate';
 import { RxHamburgerMenu } from "react-icons/rx";
 import AuthModel from './AuthModel';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import useDataContext from '../hooks/useDataContext';
 
 
-const Header = (props) => {
+
+const Header = () => {
 
   const [dropDown, setDropDown] = useState(false);
   const [updateModal, setUpdateModal] = useState(false);
   const {auth,setAuth} = useAuthContext();
   const navigate = useNavigate();
   const axiosPrivate = useAxiosPrivate();
+  const {students , setStudents, setIsModalOpen} = useDataContext();
+
+  useEffect(()=>{
+    const details = JSON.parse(localStorage.getItem('auth'));
+    if(details) {
+      setAuth(details);
+    }
+     // eslint-disable-next-line
+  },[localStorage])
 
   const getUserName =  () => {
     const uuid = localStorage.getItem('user');
-    const userName = props.students?.find((user)=>(user.uuid === uuid))?.studentName;
+    const userName = students?.find((user)=>(user.uuid === uuid))?.studentName;
     return userName;
   }
 
   const closeModal = (e) => {
     e.preventDefault();
-    props.setIsModalOpen(false);
+    setIsModalOpen(false);
     navigate('/books')
   }
 
@@ -41,12 +54,15 @@ const Header = (props) => {
   const handleLogout = async () => {
     try {
       await axiosPrivate.put('/auth/logout');
-      props.setStudents([]);
+      setStudents([]);
       setAuth(null);
       setDropDown(false);
       setUpdateModal(false);
       localStorage.clear();
       navigate('/');
+      toast.success("Your are Logged Out!", {
+        position: toast.POSITION.TOP_CENTER,
+      });
     } catch (error) {
       console.log(error.message);
     }
@@ -92,8 +108,6 @@ const Header = (props) => {
       {updateModal &&
         <AuthModel
           uuid = {localStorage.getItem('user')}
-          students = {props.students}
-          setStudents = {props.setStudents}
           updateModal = {updateModal}
           setUpdateModal = {setUpdateModal}
         />

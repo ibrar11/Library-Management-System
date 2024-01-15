@@ -1,5 +1,9 @@
 import React, { useState } from 'react'
 import moment from 'moment';
+import useDataContext from '../hooks/useDataContext';
+import useAuthContext from '../hooks/useAuthContext';
+import useAxiosPrivate from '../hooks/useAxiosPrivate';
+import useViewBookContext from '../hooks/useViewBookContext';
 
 const AssignModal = (props) => {
 
@@ -8,7 +12,13 @@ const AssignModal = (props) => {
     const [returnDate , setReturnDate] = useState('');
     const [manualFields , setManualFields] = useState(false);
 
-    const bookToAssign = props.books.find((book)=>(book.id === props.bookId));
+    const {students,books,setBooks,setStudents} = useDataContext();
+    const {auth,role} = useAuthContext();
+    const {id,setAssignModal} = useViewBookContext();
+
+    const axiosPrivate = useAxiosPrivate();
+
+    const bookToAssign = books.find((book)=>(book.id === id));
     
 
     const goBack = (e) => {
@@ -17,7 +27,7 @@ const AssignModal = (props) => {
         setRollNumber('');
         setReturnDate(''); 
         setManualFields(false);
-        props.setAssignModal(false);
+        setAssignModal(false);
     }
 
     const showManualFields = () => {
@@ -25,30 +35,47 @@ const AssignModal = (props) => {
         setStudentName('');
         setManualFields(true);
     }
-
-
-    const assignBook = (e) => {
-        e.preventDefault();
-        const condition = studentName  && rollNumber && returnDate;
-        if (condition){
-            const student = {
+    
+    const handleAssign = async (e) => {
+        e.preventDefault()
+        try{
+            const assigningDate = moment().format('YYYY-DD-MM');
+            const condition = studentName  && rollNumber && returnDate;
+            if(condition) {
+                const student = {
+                bookId: id,
                 rollNumber: rollNumber.toLowerCase(), 
-                returnDate,
-                bookId: props.bookId
+                returnDate
+                }
+                if(auth?.user?.role !== role.user) {
+                student.assigningDate = assigningDate;
+                }
+                const response = await axiosPrivate.post(`students`,student);
+                if(response?.data?.student) {
+                setStudents([...students,response.data.student]);
+                }
+                const result = await axiosPrivate.get(`books`)
+                setBooks(result.data);
+                setStudentName('');
+                setRollNumber('');
+                setReturnDate(''); 
+                setManualFields(false);
+                setAssignModal(false);
             }
-            props.handleAssign(student);
-            setStudentName('');
-            setRollNumber('');
-            setReturnDate(''); 
-            setManualFields(false);
-            props.setAssignModal(false);
-        }        
-    }
+        }catch(err){
+            if(err.response?.status === 404) {
+            console.log(err);
+            alert(err.response?.data?.message)
+            }else {
+            console.log(err);
+            }
+        }
+    };
 
     const nameSetter = (e,value)=>{
         e.preventDefault();
         setRollNumber(value);
-        const std = props.students.find((std)=>(std.rollNumber === value));
+        const std = students.find((std)=>(std.rollNumber === value));
         if(std) {
             setStudentName(std.studentName);
             return;
@@ -61,7 +88,7 @@ const AssignModal = (props) => {
         <div className='assignModal'>
             {(!bookToAssign.isBorrowed) ?
                 <div className='studentDetailsModal'>
-                    <form id='studentForm' onSubmit={(e)=>(assignBook(e))}>
+                    <form id='studentForm' onSubmit={(e)=>(handleAssign(e))}>
                     <div 
                         className="close-btn">
                         <button
@@ -91,7 +118,7 @@ const AssignModal = (props) => {
                                 onChange={(e)=>nameSetter(e,e.target.value)}
                             >
                                 <option hidden>Select Roll Number</option>
-                                {props.students.map((student)=>{
+                                {students.map((student)=>{
                                     return (
                                         <option key={student.uuid} value={student.rollNumber}>{student.rollNumber}</option>
                                     )

@@ -1,21 +1,26 @@
 import { Modal, Table } from 'antd'
 import moment from 'moment';
+import useDataContext from '../hooks/useDataContext';
+import useViewBookContext from '../hooks/useViewBookContext';
 
 const RequestModal = (props) => {
 
+    const {handleAssign, handleReturn} = useDataContext();
+    const {id,handleRequestModal} = useViewBookContext();
+
     const declineRequest = () => {
-        props.handleReturn(props.bookId);
+        handleReturn(id);
         localStorage.removeItem('uuid');
-        props.handleRequestModal();
+        handleRequestModal();
     }
 
     const handleAccept = () => {
         const student = props.student[0];
-        student.bookId = props.bookId;
+        student.bookId = id;
         student.returnDate = bookData[0].returnDate;
-        props.handleAssign(student);
+        handleAssign(student);
         localStorage.removeItem('uuid');
-        props.handleRequestModal();
+        handleRequestModal();
     }
 
     const studentData = props.student?.map((student)=>({
@@ -24,7 +29,7 @@ const RequestModal = (props) => {
     }));
 
     const bookData = props.student[0]?.books?.filter((book)=>{
-        return (book.id === props.bookId)
+        return (book.id === id)
     }).map((book)=>({key:book.id,...book}));
 
     const studentColumns = [
@@ -90,7 +95,7 @@ const RequestModal = (props) => {
                     declineRequest();
                 }else {
                     localStorage.removeItem('uuid');
-                    props.handleRequestModal();
+                    handleRequestModal();
                 }
             }}
             destroyOnClose= {true}
